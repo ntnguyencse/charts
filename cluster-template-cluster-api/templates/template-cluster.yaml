@@ -13,10 +13,10 @@ spec:
   clusterNetwork:
     pods:
       cidrBlocks:
-      - {{ .Values.podcidr | quote }}  # CIDR block used by Calico
+      - {{ .Values.podcidr }}  # CIDR block used by Calico
     services:
       cidrBlocks:
-      - {{ .Values.servicecidr | quote }} # CIDR block used by Calico
+      - {{ .Values.servicecidr }} # CIDR block used by Calico
   controlPlaneRef:
     apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
     kind: KubeadmControlPlane
