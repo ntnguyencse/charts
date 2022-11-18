@@ -2,41 +2,41 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: {{ .namespace | quote }}
+  name: {{ .namespace}}
 ---
 apiVersion: cluster.x-k8s.io/v1alpha3
 kind: Cluster
 metadata:
-  name: {{ .clustername | quote }}
-  namespace: {{ .namespace | quote }}
+  name: {{ .clustername}}
+  namespace: {{ .namespace}}
 spec:
   clusterNetwork:
     pods:
       cidrBlocks:
-      - '${ POD_CIDR}'  # CIDR block used by Calico
+      - {{ .podcidr | quote }}  # CIDR block used by Calico
     services:
       cidrBlocks:
-      - '${ SERVICE_CIDR }' # CIDR block used by Calico
+      - {{ .servicecidr | quote }} # CIDR block used by Calico
   controlPlaneRef:
     apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
     kind: KubeadmControlPlane
-    name: {{ .clustername | quote }}
+    name: {{ .clustername}}
   infrastructureRef:
     apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
     kind: DockerCluster
-    name: {{ .clustername | quote }}
+    name: {{ .clustername}}
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: DockerCluster
 metadata:
-  name: {{ .clustername | quote }}
-  namespace: {{ .namespace | quote }}
+  name: {{ .clustername}}
+  namespace: {{ .namespace}}
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
 kind: DockerMachineTemplate
 metadata:
-  name: {{ .clustername | quote }}
-  namespace: {{ .namespace | quote }}
+  name: {{ .clustername}}
+  namespace: {{ .namespace}}
 spec:
   template:
     spec: {}
@@ -44,16 +44,16 @@ spec:
 apiVersion: controlplane.cluster.x-k8s.io/v1alpha3
 kind: KubeadmControlPlane
 metadata:
-  name: {{ .clustername | quote }}
-  namespace: {{ .namespace | quote }}
+  name: {{ .clustername}}
+  namespace: {{ .namespace}}
 spec:
   infrastructureTemplate:
     apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
     kind: DockerMachineTemplate
-    name: {{ .clustername | quote }}
+    name: {{ .clustername}}
   kubeadmConfigSpec:
     clusterConfiguration:
-      kubernetesVersion: '${ KUBERNETES_VERSION }'
+      kubernetesVersion: {{ .kubernetesversion}}
     initConfiguration:
       nodeRegistration:
         criSocket: /var/run/containerd/containerd.sock
@@ -65,13 +65,13 @@ spec:
         kubeletExtraArgs:
           eviction-hard: nodefs.available<0%,nodefs.inodesFree<0%,imagefs.available<0%
   replicas: ${ CONTROL_PLANE_MACHINE_COUNT }
-  version: '${ KUBERNETES_VERSION }'
+  version: {{ .kubernetesversion}}
 ---
 apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
 kind: KubeadmConfigTemplate
 metadata:
-  name: '${ CLUSTER_NAME }-md-0'
-  namespace: {{ .namespace | quote }}
+  name: {{ .namespace}}-md-0
+  namespace: {{ .namespace}}
 spec:
   template:
     spec:
@@ -85,29 +85,29 @@ apiVersion: cluster.x-k8s.io/v1alpha3
 kind: MachineDeployment
 metadata:
   labels:
-    cluster.x-k8s.io/cluster-name: {{ .clustername | quote }}
-  name: '${ CLUSTER_NAME }-md-0'
-  namespace: {{ .namespace | quote }}
+    cluster.x-k8s.io/cluster-name: {{ .clustername}}
+  name: {{ .namespace}}-md-0
+  namespace: {{ .namespace}}
 spec:
-  clusterName: {{ .clustername | quote }}
-  replicas: ${ WORKER_MACHINE_COUNT }
+  clusterName: {{ .clustername}}
+  replicas: {{ .kubernetesmachinecount}}
   selector:
     matchLabels:
-      cluster.x-k8s.io/cluster-name: {{ .clustername | quote }}
+      cluster.x-k8s.io/cluster-name: {{ .clustername}}
   template:
     metadata:
       labels:
-        cluster.x-k8s.io/cluster-name: {{ .clustername | quote }}
+        cluster.x-k8s.io/cluster-name: {{ .clustername}}
     spec:
       bootstrap:
         configRef:
           apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
           kind: KubeadmConfigTemplate
-          name: '${ CLUSTER_NAME }-md-0'
-      clusterName: {{ .clustername | quote }}
+          name: {{ .namespace}}-md-0
+      clusterName: {{ .clustername}}
       infrastructureRef:
         apiVersion: infrastructure.cluster.x-k8s.io/v1alpha3
         kind: DockerMachineTemplate
-        name: {{ .clustername | quote }}
-      version: '${ KUBERNETES_VERSION }'
+        name: {{ .clustername}}
+      version: {{ .kubernetesversion}}
     
