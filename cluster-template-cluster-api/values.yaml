@@ -1,8 +1,9 @@
-NAMESPACE
-CLUSTER_NAME
+namespace: default
+clustername: test
 # CIDR block used by Calico
-POD_CIDR
+podcidr: ["10.96.0.0/12"]
 # CIDR block used by Calico
-SERVICE_CIDR
-KUBERNETES_VERSION
-CONTROL_PLANE_MACHINE_COUNT
+servicecidr: ["192.168.0.0/16"]
+kubernetesversion: v1.2.5
+kubernetesmachinecount: 1
+controlplanemachinecount: 1
