@@ -1,0 +1,26 @@
+apiVersion: infra.nephio.org/v1alpha1
+kind: Infra
+metadata:
+  name: cluster-edge-01
+  labels:
+    nephio.org/region: us-central1
+    nephio.org/site-type: regional
+    nephio.org/site: us-central1
+  provider: OpenStack
+  provisionMethod: Cluster-API
+specs:
+  namespace: default
+  kubernetesVersion: v1.25.0
+  controlPlaneMachineCount: 1
+  kubernetesMachineCount: 1
+  podCIDR: ["10.96.0.0/12"]
+  serviceCIDR: ["192.168.0.0/16"]
+#namespace: default
+#clustername: test
+# CIDR block used by Calico
+#podcidr: ["10.96.0.0/12"]
+# CIDR block used by Calico
+#servicecidr: ["192.168.0.0/16"]
+#kubernetesversion: v1.2.5
+#kubernetesmachinecount: 1
+#controlplanemachinecount: 1

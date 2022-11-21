@@ -1,0 +1,14 @@
+apiVersion: automation.nephio.org/v1alpha1
+kind: PackageDeployment
+metadata:
+  name: caching-dns
+spec:
+  selector:
+    matchLabels:
+      nephio.org/region: us-central1
+  name: coredns
+  namespace: dnscache
+  packageRef:
+    repository: nephio-packages
+    packageName: coredns-caching-scaled
+    revision: v1
